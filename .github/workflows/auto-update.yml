@@ -83,7 +83,7 @@ jobs:
         uses: docker://asyncapi/github-action-for-generator:2.0.0
         with:
           template: '@asyncapi/ts-nats-template'
-          filepath: ./definitions/rust_public.asyncapi.json
+          filepath: ./definitions/bundled/rust_public.asyncapi.json
           output: ./
       - name: Write new config file to ensure we keep the new state for next time
         if: ${{env.major_version_change == 'true' || env.minor_version_change == 'true' || env.patch_version_change == 'true'}}
