@@ -8,13 +8,12 @@ on:
   repository_dispatch:
     types:
       - webhook
-env:
 jobs:
   update-code:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: actions/setup-node@v3
         with:
           node-version: '14'
