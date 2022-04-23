@@ -115,7 +115,7 @@ jobs:
 
       # Follow conventional commit for PR's to ensure accurate updates
       - name: Commit changes
-        run: git config --global user.email "gamingeventapi@gmail.com" && git config --global user.name "GamingAPIBot" && git commit -a -m"${{env.commit_message}}"
+        run: git add -A && git config --global user.email "gamingeventapi@gmail.com" && git config --global user.name "GamingAPIBot" && git commit -m"${{env.commit_message}}"
       - name: Create pull request for major version if needed
         if: ${{env.major_version_change == 'true'}}
         uses: peter-evans/create-pull-request@v3
