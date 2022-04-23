@@ -115,7 +115,7 @@ jobs:
 
       # Follow conventional commit for PR's to ensure accurate updates
       - name: Commit changes
-        run: git commit -a -m"${{env.commit_message}}"
+        run: git config --global user.email "gamingeventapi@gmail.com" && git config --global user.name "GamingAPIBot" && git commit -a -m"${{env.commit_message}}"
       - name: Create pull request for major version if needed
         if: ${{env.major_version_change == 'true'}}
         uses: peter-evans/create-pull-request@v3
@@ -123,8 +123,7 @@ jobs:
           branch: 'update-generate-client'
           base: 'main'
           title: "feat!: major version change"
-          committer: GamingEventapiBot <gamingeventapi@gmail.com>
-          author: GamingEventapiBot <gamingeventapi@gmail.com>
+          author: GamingAPIBot <gamingeventapi@gmail.com>
           delete-branch: true
           body: ${{env.commit_message}}. Library require a new major version change.
       - name: Create pull request for minor version if needed
@@ -134,7 +133,6 @@ jobs:
           branch: 'update-generate-client'
           base: 'main'
           title: "feat: minor version change"
-          committer: GamingEventapiBot <gamingeventapi@gmail.com>
           author: GamingEventapiBot <gamingeventapi@gmail.com>
           delete-branch: true
           body: ${{env.commit_message}}. Library require a new minor version change.
@@ -145,7 +143,6 @@ jobs:
           branch: 'update-generate-client'
           base: 'main'
           title: "fix: patch version change"
-          committer: GamingEventapiBot <gamingeventapi@gmail.com>
           author: GamingEventapiBot <gamingeventapi@gmail.com>
           delete-branch: true
           body: ${{env.commit_message}}. Library require a new patch version change.
