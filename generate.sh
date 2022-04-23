@@ -90,8 +90,11 @@ if $major_version_change == 'true' || $minor_version_change == 'true' || $patch_
   mv ./package_tmp.json ./package.json
   rm -rf ./definitions
   npm i
-  exit 0
 fi
-echo "Nothing to generate"
+mkdir -p ./.github/variables
+echo "
+major_version_change="$major_version_change"
+minor_version_change="$minor_version_change"
+patch_version_change="$patch_version_change"
+" > ./.github/variables/generator.env
 rm -rf ./definitions
-exit 1
