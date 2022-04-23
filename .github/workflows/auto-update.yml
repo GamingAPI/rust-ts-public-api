@@ -124,6 +124,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: 'update-generate-client'
+          base: 'origin/update-generate-client'
           title: "feat!: major version change"
           committer: GamingEventapiBot <gamingeventapi@gmail.com>
           author: GamingEventapiBot <gamingeventapi@gmail.com>
@@ -135,6 +136,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: 'update-generate-client'
+          base: 'origin/update-generate-client'
           title: "feat: minor version change"
           committer: GamingEventapiBot <gamingeventapi@gmail.com>
           author: GamingEventapiBot <gamingeventapi@gmail.com>
@@ -146,6 +148,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: 'update-generate-client'
+          base: 'origin/update-generate-client'
           title: "fix: patch version change"
           committer: GamingEventapiBot <gamingeventapi@gmail.com>
           author: GamingEventapiBot <gamingeventapi@gmail.com>
