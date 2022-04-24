@@ -1,6 +1,6 @@
 {
-  "name": "@gamingapi/undefined",
-  "description": "undefined",
+  "name": "@gamingapi/rust-ts-public-api",
+  "description": "TypeScript public API wrapper for rust",
   "publishConfig": {
     "access": "public"
   },
@@ -8,14 +8,14 @@
   "author": "Jonas Lagoni (jonas-lt@live.dk)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/GamingAPI/undefined/issues"
+    "url": "https://github.com/GamingAPI/rust-ts-public-api/issues"
   },
   "files": [
     "/lib",
     "./README.md",
     "./LICENSE"
   ],
-  "homepage": "https://github.com/GamingAPI/undefined#readme",
+  "homepage": "https://github.com/GamingAPI/rust-ts-public-api#readme",
   "scripts": {
     "generate:assets": "npm run build && npm run docs",
     "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
