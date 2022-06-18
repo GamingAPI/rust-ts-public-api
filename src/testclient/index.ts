@@ -4,8 +4,16 @@ import {
 } from '../NatsTypescriptTemplateError';
 import * as Nats from 'nats';
 import * as v0RustServersServerIdEventsStartedChannel from "./testchannels/V0RustServersServerIdEventsStarted";
+import * as v0RustServersServerIdEventsPlayerSteamIdChattedChannel from "./testchannels/V0RustServersServerIdEventsPlayerSteamIdChatted";
+import ChatMessage from "../models/ChatMessage";
 export {
   v0RustServersServerIdEventsStartedChannel
+};
+export {
+  v0RustServersServerIdEventsPlayerSteamIdChattedChannel
+};
+export {
+  ChatMessage
 };
 /**
  * @class NatsAsyncApiTestClient
@@ -120,6 +128,30 @@ export class NatsAsyncApiTestClient {
         message,
         this.nc,
         this.codec, server_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/events/player/{steam_id}/chatted` channel 
+   * 
+   * Event for when a player used the chat
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public publishToV0RustServersServerIdEventsPlayerSteamIdChatted(
+    message: ChatMessage, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
+      return v0RustServersServerIdEventsPlayerSteamIdChattedChannel.publish(
+        message,
+        this.nc,
+        this.codec, server_id, steam_id,
         options
       );
     } else {
