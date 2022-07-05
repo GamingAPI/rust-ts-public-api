@@ -11,7 +11,7 @@ import * as TestClient from '../../src/testclient'
 import {
   NatsTypescriptTemplateError
 } from '../../src/NatsTypescriptTemplateError';
-describe('v0/rust/servers/{server_id}/events/started can talk to itself', () => {
+describe('v0/rust/servers/{server_id}/events/player/{steam_id}/chatted can talk to itself', () => {
   var client: Client.NatsAsyncApiClient;
   var testClient: TestClient.NatsAsyncApiTestClient;
   before(async () => {
@@ -25,17 +25,25 @@ describe('v0/rust/servers/{server_id}/events/started can talk to itself', () => 
   });
   it('can send message', async () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
-    var receivedMsg: Client.ServerStarted | undefined = undefined;
-    var receivedServerId: string | undefined = undefined
-    var publishMessage: TestClient.ServerStarted = TestClient.ServerStarted.unmarshal({
+    var receivedMsg: Client.ChatMessage | undefined = undefined;
+    var receivedServerId: string | undefined = undefinedvar receivedSteamId: string | undefined = undefined
+    var publishMessage: TestClient.ChatMessage = TestClient.ChatMessage.unmarshal({
+      "steam_id": "string",
+      "player_name": "string",
+      "raw_message": "string",
+      "full_message": "string",
+      "is_admin": true,
+      "rank": 0,
+      "title": "string",
       "timestamp": "2016-08-29T09:12:33.001Z"
     });
     var ServerIdToSend: string = "string"
-    const subscription = await client.subscribeToV0RustServersServerIdEventsStarted((err, msg, server_id) => {
+    var SteamIdToSend: string = "string"
+    const subscription = await client.subscribeToV0RustServersServerIdEventsPlayerSteamIdChatted((err, msg, server_id, steam_id) => {
         receivedError = err;
         receivedMsg = msg;
-        receivedServerId = server_id
-      }, ServerIdToSend,
+        receivedServerId = server_idreceivedSteamId = steam_id
+      }, ServerIdToSend, SteamIdToSend,
       true
     );
     const tryAndWaitForResponse = new Promise((resolve, reject) => {
@@ -52,12 +60,13 @@ describe('v0/rust/servers/{server_id}/events/started can talk to itself', () => 
         }
       }, 100);
     });
-    await testClient.publishToV0RustServersServerIdEventsStarted(publishMessage, ServerIdToSend);
+    await testClient.publishToV0RustServersServerIdEventsPlayerSteamIdChatted(publishMessage, ServerIdToSend, SteamIdToSend);
     await tryAndWaitForResponse;
     expect(receivedError).to.be.undefined;
     expect(receivedMsg).to.not.be.undefined;
     expect(receivedMsg!.marshal()).to.equal(publishMessage.marshal());
     expect(receivedServerId).to.be.equal(ServerIdToSend);
+    expect(receivedSteamId).to.be.equal(SteamIdToSend);
   });
   after(async () => {
     await client.disconnect();
