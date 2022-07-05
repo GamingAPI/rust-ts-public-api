@@ -5,25 +5,17 @@ import {
 } from './NatsTypescriptTemplateError';
 import * as Nats from 'nats';
 import * as v0RustServersServerIdEventsStartedChannel from "./channels/V0RustServersServerIdEventsStarted";
-import * as v0RustServersServerIdEventsStoppedChannel from "./channels/V0RustServersServerIdEventsStopped";
 import * as v0RustServersServerIdEventsPlayerSteamIdChattedChannel from "./channels/V0RustServersServerIdEventsPlayerSteamIdChatted";
 import ServerStarted from "./models/ServerStarted";
-import ServerStopped from "./models/ServerStopped";
 import ChatMessage from "./models/ChatMessage";
 export {
   v0RustServersServerIdEventsStartedChannel
-};
-export {
-  v0RustServersServerIdEventsStoppedChannel
 };
 export {
   v0RustServersServerIdEventsPlayerSteamIdChattedChannel
 };
 export {
   ServerStarted
-};
-export {
-  ServerStopped
 };
 export {
   ChatMessage
@@ -152,44 +144,6 @@ export class NatsAsyncApiClient {
       if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
         try {
           const sub = await v0RustServersServerIdEventsStartedChannel.subscribe(
-            onDataCallback,
-            this.nc,
-            this.codec, server_id,
-            options
-          );
-          if (flush) {
-            await this.nc.flush();
-          }
-          resolve(sub);
-        } catch (e: any) {
-          reject(e);
-        }
-      } else {
-        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
-      }
-    });
-  }
-  /**
-   * Subscribe to the `v0/rust/servers/{server_id}/events/stopped`
-   * 
-   * Channel for the API to process for when a server has stopped
-   * 
-   * @param onDataCallback to call when messages are received
-   * @param server_id parameter to use in topic
-   * @param flush ensure client is force flushed after subscribing
-   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
-   */
-  public subscribeToV0RustServersServerIdEventsStopped(
-    onDataCallback: (
-      err ? : NatsTypescriptTemplateError,
-      msg ? : ServerStopped, server_id ? : string) => void, server_id: string,
-    flush ? : boolean,
-    options ? : Nats.SubscriptionOptions
-  ): Promise < Nats.Subscription > {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
-        try {
-          const sub = await v0RustServersServerIdEventsStoppedChannel.subscribe(
             onDataCallback,
             this.nc,
             this.codec, server_id,
