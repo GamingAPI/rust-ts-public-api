@@ -1,16 +1,16 @@
-import ServerStarted from '../../models/ServerStarted';
+import ServerStopped from '../../models/ServerStopped';
 import * as Nats from 'nats';
 import {
   ErrorCode,
   NatsTypescriptTemplateError
 } from '../../NatsTypescriptTemplateError';
 /**
- * Module which wraps functionality for the `v0/rust/servers/{server_id}/events/started` channel
- * @module v0RustServersServerIdEventsStarted
+ * Module which wraps functionality for the `v0/rust/servers/{server_id}/events/stopped` channel
+ * @module v0RustServersServerIdEventsStopped
  */
 /**
  * Internal functionality to publish message to channel 
- * v0/rust/servers/{server_id}/events/started
+ * v0/rust/servers/{server_id}/events/stopped
  * 
  * @param message to publish
  * @param nc to publish with
@@ -19,7 +19,7 @@ import {
  * @param options to publish with
  */
 export function publish(
-  message: ServerStarted,
+  message: ServerStopped,
   nc: Nats.NatsConnection,
   codec: Nats.Codec < any > , server_id: string,
   options ? : Nats.PublishOptions
@@ -28,7 +28,7 @@ export function publish(
     try {
       let dataToSend: any = message.marshal();
       dataToSend = codec.encode(dataToSend);
-      nc.publish(`v0.rust.servers.${server_id}.events.started`, dataToSend, options);
+      nc.publish(`v0.rust.servers.${server_id}.events.stopped`, dataToSend, options);
       resolve();
     } catch (e: any) {
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));

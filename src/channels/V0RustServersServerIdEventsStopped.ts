@@ -1,15 +1,15 @@
-import ServerStarted from '../models/ServerStarted';
+import ServerStopped from '../models/ServerStopped';
 import * as Nats from 'nats';
 import {
   ErrorCode,
   NatsTypescriptTemplateError
 } from '../NatsTypescriptTemplateError';
 /**
- * Module which wraps functionality for the `v0/rust/servers/{server_id}/events/started` channel
- * @module v0RustServersServerIdEventsStarted
+ * Module which wraps functionality for the `v0/rust/servers/{server_id}/events/stopped` channel
+ * @module v0RustServersServerIdEventsStopped
  */
 /**
- * Internal functionality to setup subscription on the `v0/rust/servers/{server_id}/events/started` channel 
+ * Internal functionality to setup subscription on the `v0/rust/servers/{server_id}/events/stopped` channel 
  * 
  * @param onDataCallback to call when messages are received
  * @param nc to subscribe with
@@ -20,7 +20,7 @@ import {
 export function subscribe(
   onDataCallback: (
     err ? : NatsTypescriptTemplateError,
-    msg ? : ServerStarted, server_id ? : string) => void,
+    msg ? : ServerStopped, server_id ? : string) => void,
   nc: Nats.NatsConnection,
   codec: Nats.Codec < any > , server_id: string,
   options ? : Nats.SubscriptionOptions
@@ -30,10 +30,10 @@ export function subscribe(
       ...options
     };
     try {
-      let subscription = nc.subscribe(`v0.rust.servers.${server_id}.events.started`, subscribeOptions);
+      let subscription = nc.subscribe(`v0.rust.servers.${server_id}.events.stopped`, subscribeOptions);
       (async () => {
         for await (const msg of subscription) {
-          const unmodifiedChannel = `v0.rust.servers.{server_id}.events.started`;
+          const unmodifiedChannel = `v0.rust.servers.{server_id}.events.stopped`;
           let channel = msg.subject;
           const serverIdSplit = unmodifiedChannel.split("{server_id}");
           const splits = [
@@ -44,7 +44,7 @@ export function subscribe(
           const serverIdEnd = channel.indexOf(splits[1]);
           const serverIdParam = "" + channel.substring(0, serverIdEnd);
           let receivedData: any = codec.decode(msg.data);
-          onDataCallback(undefined, ServerStarted.unmarshal(receivedData), serverIdParam);
+          onDataCallback(undefined, ServerStopped.unmarshal(receivedData), serverIdParam);
         }
         console.log("subscription closed");
       })();

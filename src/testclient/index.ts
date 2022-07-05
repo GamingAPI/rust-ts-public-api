@@ -4,8 +4,28 @@ import {
 } from '../NatsTypescriptTemplateError';
 import * as Nats from 'nats';
 import * as v0RustServersServerIdEventsStartedChannel from "./testchannels/V0RustServersServerIdEventsStarted";
+import * as v0RustServersServerIdEventsStoppedChannel from "./testchannels/V0RustServersServerIdEventsStopped";
+import * as v0RustServersServerIdEventsPlayerSteamIdChattedChannel from "./testchannels/V0RustServersServerIdEventsPlayerSteamIdChatted";
+import ServerStarted from "../models/ServerStarted";
+import ServerStopped from "../models/ServerStopped";
+import ChatMessage from "../models/ChatMessage";
 export {
   v0RustServersServerIdEventsStartedChannel
+};
+export {
+  v0RustServersServerIdEventsStoppedChannel
+};
+export {
+  v0RustServersServerIdEventsPlayerSteamIdChattedChannel
+};
+export {
+  ServerStarted
+};
+export {
+  ServerStopped
+};
+export {
+  ChatMessage
 };
 /**
  * @class NatsAsyncApiTestClient
@@ -112,7 +132,7 @@ export class NatsAsyncApiTestClient {
    * @param server_id parameter to use in topic
    */
   public publishToV0RustServersServerIdEventsStarted(
-    message: null, server_id: string,
+    message: ServerStarted, server_id: string,
     options ? : Nats.PublishOptions
   ): Promise < void > {
     if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
@@ -120,6 +140,53 @@ export class NatsAsyncApiTestClient {
         message,
         this.nc,
         this.codec, server_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/events/stopped` channel 
+   * 
+   * Channel for the API to process for when a server has stopped
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   */
+  public publishToV0RustServersServerIdEventsStopped(
+    message: ServerStopped, server_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
+      return v0RustServersServerIdEventsStoppedChannel.publish(
+        message,
+        this.nc,
+        this.codec, server_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/events/player/{steam_id}/chatted` channel 
+   * 
+   * Event for when a player used the chat
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public publishToV0RustServersServerIdEventsPlayerSteamIdChatted(
+    message: ChatMessage, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
+      return v0RustServersServerIdEventsPlayerSteamIdChattedChannel.publish(
+        message,
+        this.nc,
+        this.codec, server_id, steam_id,
         options
       );
     } else {
