@@ -1,7 +1,7 @@
 {
   "name": "@gamingapi/rust-ts-public-api",
   "description": "TypeScript public API wrapper for rust",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
