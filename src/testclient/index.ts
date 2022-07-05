@@ -4,25 +4,17 @@ import {
 } from '../NatsTypescriptTemplateError';
 import * as Nats from 'nats';
 import * as v0RustServersServerIdEventsStartedChannel from "./testchannels/V0RustServersServerIdEventsStarted";
-import * as v0RustServersServerIdEventsStoppedChannel from "./testchannels/V0RustServersServerIdEventsStopped";
 import * as v0RustServersServerIdEventsPlayerSteamIdChattedChannel from "./testchannels/V0RustServersServerIdEventsPlayerSteamIdChatted";
 import ServerStarted from "../models/ServerStarted";
-import ServerStopped from "../models/ServerStopped";
 import ChatMessage from "../models/ChatMessage";
 export {
   v0RustServersServerIdEventsStartedChannel
-};
-export {
-  v0RustServersServerIdEventsStoppedChannel
 };
 export {
   v0RustServersServerIdEventsPlayerSteamIdChattedChannel
 };
 export {
   ServerStarted
-};
-export {
-  ServerStopped
 };
 export {
   ChatMessage
@@ -137,29 +129,6 @@ export class NatsAsyncApiTestClient {
   ): Promise < void > {
     if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
       return v0RustServersServerIdEventsStartedChannel.publish(
-        message,
-        this.nc,
-        this.codec, server_id,
-        options
-      );
-    } else {
-      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
-    }
-  }
-  /**
-   * Publish to the `v0/rust/servers/{server_id}/events/stopped` channel 
-   * 
-   * Channel for the API to process for when a server has stopped
-   * 
-   * @param message to publish
-   * @param server_id parameter to use in topic
-   */
-  public publishToV0RustServersServerIdEventsStopped(
-    message: ServerStopped, server_id: string,
-    options ? : Nats.PublishOptions
-  ): Promise < void > {
-    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
-      return v0RustServersServerIdEventsStoppedChannel.publish(
         message,
         this.nc,
         this.codec, server_id,
