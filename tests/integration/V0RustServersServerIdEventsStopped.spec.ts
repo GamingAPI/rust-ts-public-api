@@ -11,7 +11,7 @@ import * as TestClient from '../../src/testclient'
 import {
   NatsTypescriptTemplateError
 } from '../../src/NatsTypescriptTemplateError';
-describe('v0/rust/servers/{server_id}/events/started can talk to itself', () => {
+describe('v0/rust/servers/{server_id}/events/stopped can talk to itself', () => {
   var client: Client.NatsAsyncApiClient;
   var testClient: TestClient.NatsAsyncApiTestClient;
   before(async () => {
@@ -25,13 +25,13 @@ describe('v0/rust/servers/{server_id}/events/started can talk to itself', () => 
   });
   it('can send message', async () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
-    var receivedMsg: Client.ServerStarted | undefined = undefined;
+    var receivedMsg: Client.ServerStopped | undefined = undefined;
     var receivedServerId: string | undefined = undefined
-    var publishMessage: TestClient.ServerStarted = TestClient.ServerStarted.unmarshal({
+    var publishMessage: TestClient.ServerStopped = TestClient.ServerStopped.unmarshal({
       "timestamp": "2016-08-29T09:12:33.001Z"
     });
     var ServerIdToSend: string = "string"
-    const subscription = await client.subscribeToV0RustServersServerIdEventsStarted((err, msg, server_id) => {
+    const subscription = await client.subscribeToV0RustServersServerIdEventsStopped((err, msg, server_id) => {
         receivedError = err;
         receivedMsg = msg;
         receivedServerId = server_id
@@ -52,7 +52,7 @@ describe('v0/rust/servers/{server_id}/events/started can talk to itself', () => 
         }
       }, 100);
     });
-    await testClient.publishToV0RustServersServerIdEventsStarted(publishMessage, ServerIdToSend);
+    await testClient.publishToV0RustServersServerIdEventsStopped(publishMessage, ServerIdToSend);
     await tryAndWaitForResponse;
     expect(receivedError).to.be.undefined;
     expect(receivedMsg).to.not.be.undefined;
