@@ -37,9 +37,9 @@ semver_template_current_version=( ${template_current_version//./ } )
 major_template_current_version=${semver_template_current_version[0]}
 minor_template_current_version=${semver_template_current_version[1]}
 patch_template_current_version=${semver_template_current_version[2]}
-if [[ $major_template_current_version > $major_template_last_version ]]; then major_template_change="true"; else major_template_change="false"; fi
-if [[ $minor_template_current_version > $minor_template_last_version ]]; then minor_template_change="true"; else minor_template_change="false"; fi
-if [[ $patch_template_current_version > $patch_template_last_version ]]; then patch_template_change="true"; else patch_template_change="false"; fi
+if (( $major_template_current_version > $major_template_last_version )); then major_template_change="true"; else major_template_change="false"; fi
+if (( $minor_template_current_version > $minor_template_last_version )); then minor_template_change="true"; else minor_template_change="false"; fi
+if (( $patch_template_current_version > $patch_template_last_version )); then patch_template_change="true"; else patch_template_change="false"; fi
 
 # Split the last used AsyncAPI document version by '.' to split it up into 'major.minor.fix'
 semver_document_last_version=( ${document_last_version//./ } )
@@ -51,9 +51,9 @@ semver_document_current_version=( ${document_current_version//./ } )
 major_document_current_version=${semver_document_current_version[0]}
 minor_document_current_version=${semver_document_current_version[1]}
 patch_document_current_version=${semver_document_current_version[2]}
-if [[ $major_document_current_version > $major_document_last_version ]]; then major_document_change="true"; else major_document_change="false"; fi
-if [[ $minor_document_current_version > $minor_document_last_version ]]; then minor_document_change="true"; else minor_document_change="false"; fi
-if [[ $patch_document_current_version > $patch_document_last_version ]]; then patch_document_change="true"; else patch_document_change="false"; fi
+if (( $major_document_current_version > $major_document_last_version )); then major_document_change="true"; else major_document_change="false"; fi
+if (( $minor_document_current_version > $minor_document_last_version )); then minor_document_change="true"; else minor_document_change="false"; fi
+if (( $patch_document_current_version > $patch_document_last_version )); then patch_document_change="true"; else patch_document_change="false"; fi
 
 # Set the commit messages that details what changed
 if [ $major_template_change == "true" ]; then
