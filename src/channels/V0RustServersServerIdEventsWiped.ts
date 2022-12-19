@@ -52,3 +52,154 @@ export function subscribe(
     }
   })
 }
+/**
+ * Internal functionality to setup jetstrema pull on the `v0/rust/servers/{server_id}/events/wiped` channel 
+ * 
+ * @param onDataCallback to call when messages are received
+ * @param js client to pull with
+ * @param codec used to convert messages
+ * @param server_id parameter to use in topic
+ */
+export function jetStreamPull(
+  onDataCallback: (
+    err ? : NatsTypescriptTemplateError,
+    msg ? : null, server_id ? : string,
+    jetstreamMsg ? : Nats.JsMsg) => void,
+  js: Nats.JetStreamClient,
+  codec: Nats.Codec < any > , server_id: string,
+) {
+  const stream = `v0.rust.servers.${server_id}.events.wiped`;
+  (async () => {
+    const msg = await js.pull(stream, 'durableName');
+    const unmodifiedChannel = `v0.rust.servers.{server_id}.events.wiped`;
+    let channel = msg.subject;
+    const serverIdSplit = unmodifiedChannel.split("{server_id}");
+    const splits = [
+      serverIdSplit[0],
+      serverIdSplit[1]
+    ];
+    channel = channel.substring(splits[0].length);
+    const serverIdEnd = channel.indexOf(splits[1]);
+    const serverIdParam = "" + channel.substring(0, serverIdEnd);
+    onDataCallback(undefined, null, serverIdParam);
+  })();
+}
+/**
+ * Internal functionality to setup jetstream push subscription on the `v0/rust/servers/{server_id}/events/wiped` channel 
+ * 
+ * @param onDataCallback to call when messages are received
+ * @param nc to subscribe with
+ * @param codec used to convert messages
+ * @param server_id parameter to use in topic
+ * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+ */
+export function jetStreamPushSubscribe(
+  onDataCallback: (
+    err ? : NatsTypescriptTemplateError,
+    msg ? : null, server_id ? : string,
+    jetstreamMsg ? : Nats.JsMsg) => void,
+  js: Nats.JetStreamClient,
+  codec: Nats.Codec < any > , server_id: string,
+  options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+): Promise < Nats.JetStreamSubscription > {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let subscription = js.subscribe(`v0.rust.servers.${server_id}.events.wiped`, options);
+      (async () => {
+        for await (const msg of await subscription) {
+          const unmodifiedChannel = `v0.rust.servers.{server_id}.events.wiped`;
+          let channel = msg.subject;
+          const serverIdSplit = unmodifiedChannel.split("{server_id}");
+          const splits = [
+            serverIdSplit[0],
+            serverIdSplit[1]
+          ];
+          channel = channel.substring(splits[0].length);
+          const serverIdEnd = channel.indexOf(splits[1]);
+          const serverIdParam = "" + channel.substring(0, serverIdEnd);
+          onDataCallback(undefined, null, serverIdParam);
+        }
+        console.log("subscription closed");
+      })();
+      resolve(subscription);
+    } catch (e: any) {
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+    }
+  })
+}
+/**
+ * Internal functionality to setup jetstream pull subscription on the `v0/rust/servers/{server_id}/events/wiped` channel 
+ * 
+ * @param onDataCallback to call when messages are received
+ * @param nc to subscribe with
+ * @param codec used to convert messages
+ * @param server_id parameter to use in topic
+ */
+export function jetStreamPullSubscribe(
+  onDataCallback: (
+    err ? : NatsTypescriptTemplateError,
+    msg ? : null, server_id ? : string,
+    jetstreamMsg ? : Nats.JsMsg) => void,
+  js: Nats.JetStreamClient,
+  codec: Nats.Codec < any > , server_id: string,
+  options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+): Promise < Nats.JetStreamPullSubscription > {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const subscription = await js.pullSubscribe(`v0.rust.servers.${server_id}.events.wiped`, options);
+      (async () => {
+        for await (const msg of subscription) {
+          const unmodifiedChannel = `v0.rust.servers.{server_id}.events.wiped`;
+          let channel = msg.subject;
+          const serverIdSplit = unmodifiedChannel.split("{server_id}");
+          const splits = [
+            serverIdSplit[0],
+            serverIdSplit[1]
+          ];
+          channel = channel.substring(splits[0].length);
+          const serverIdEnd = channel.indexOf(splits[1]);
+          const serverIdParam = "" + channel.substring(0, serverIdEnd);
+          onDataCallback(undefined, null, serverIdParam);
+        }
+      })();
+      resolve(subscription);
+    } catch (e: any) {
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+    }
+  })
+}
+/**
+ * Internal functionality to setup jetstrema fetch on the `v0/rust/servers/{server_id}/events/wiped` channel 
+ * 
+ * @param onDataCallback to call when messages are received
+ * @param js client to fetch with
+ * @param codec used to convert messages
+ * @param server_id parameter to use in topic
+ */
+export function jetsStreamFetch(
+  onDataCallback: (
+    err ? : NatsTypescriptTemplateError,
+    msg ? : null, server_id ? : string,
+    jetstreamMsg ? : Nats.JsMsg) => void,
+  js: Nats.JetStreamClient,
+  codec: Nats.Codec < any > , server_id: string,
+  durable: string, options ? : Partial < Nats.PullOptions >
+) {
+  const stream = `v0.rust.servers.${server_id}.events.wiped`;
+  (async () => {
+    let msgs = await js.fetch(stream, durable, options);
+    for await (const msg of msgs) {
+      const unmodifiedChannel = `v0.rust.servers.{server_id}.events.wiped`;
+      let channel = msg.subject;
+      const serverIdSplit = unmodifiedChannel.split("{server_id}");
+      const splits = [
+        serverIdSplit[0],
+        serverIdSplit[1]
+      ];
+      channel = channel.substring(splits[0].length);
+      const serverIdEnd = channel.indexOf(splits[1]);
+      const serverIdParam = "" + channel.substring(0, serverIdEnd);
+      onDataCallback(undefined, null, serverIdParam);
+    }
+  })();
+}

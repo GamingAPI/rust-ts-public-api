@@ -142,6 +142,7 @@ export {
  */
 export class NatsAsyncApiClient {
   private nc ? : Nats.NatsConnection;
+  private js ? : Nats.JetStreamClient;
   private codec ? : Nats.Codec < any > ;
   private options ? : Nats.ConnectionOptions;
   /**
@@ -161,6 +162,7 @@ export class NatsAsyncApiClient {
       }
       try {
         this.nc = await Nats.connect(this.options);
+        this.js = this.nc.jetstream();
         resolve();
       } catch (e: any) {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -270,6 +272,134 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/started`
+   * 
+   * Channel for the API to process for when a server has started
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdEventsStarted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerStarted, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsStartedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/started`
+   * 
+   * Channel for the API to process for when a server has started
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdEventsStarted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerStarted, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdEventsStartedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/started`
+   * 
+   * Channel for the API to process for when a server has started
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdEventsStarted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerStarted, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdEventsStartedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/started`
+   * 
+   * Channel for the API to process for when a server has started
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdEventsStarted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerStarted, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsStartedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/events/stopped`
    * 
    * Channel for the API to process for when a server has stopped
@@ -306,6 +436,134 @@ export class NatsAsyncApiClient {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
       }
     });
+  }
+  /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/stopped`
+   * 
+   * Channel for the API to process for when a server has stopped
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdEventsStopped(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerStopped, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsStoppedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/stopped`
+   * 
+   * Channel for the API to process for when a server has stopped
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdEventsStopped(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerStopped, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdEventsStoppedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/stopped`
+   * 
+   * Channel for the API to process for when a server has stopped
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdEventsStopped(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerStopped, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdEventsStoppedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/stopped`
+   * 
+   * Channel for the API to process for when a server has stopped
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdEventsStopped(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerStopped, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsStoppedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
   }
   /**
    * Subscribe to the `v0/rust/servers/{server_id}/events/player/{steam_id}/chatted`
@@ -347,6 +605,138 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/player/{steam_id}/chatted`
+   * 
+   * Event for when a player used the chat
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdEventsPlayerSteamIdChatted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ChatMessage, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsPlayerSteamIdChattedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/player/{steam_id}/chatted`
+   * 
+   * Event for when a player used the chat
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdEventsPlayerSteamIdChatted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ChatMessage, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdEventsPlayerSteamIdChattedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/player/{steam_id}/chatted`
+   * 
+   * Event for when a player used the chat
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdEventsPlayerSteamIdChatted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ChatMessage, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdEventsPlayerSteamIdChattedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/player/{steam_id}/chatted`
+   * 
+   * Event for when a player used the chat
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdEventsPlayerSteamIdChatted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ChatMessage, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsPlayerSteamIdChattedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/events/wiped`
    * 
    * Channel for the API to process when a server has just wiped
@@ -383,6 +773,134 @@ export class NatsAsyncApiClient {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
       }
     });
+  }
+  /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/wiped`
+   * 
+   * Channel for the API to process when a server has just wiped
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdEventsWiped(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : null, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsWipedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/wiped`
+   * 
+   * Channel for the API to process when a server has just wiped
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdEventsWiped(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : null, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdEventsWipedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/wiped`
+   * 
+   * Channel for the API to process when a server has just wiped
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdEventsWiped(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : null, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdEventsWipedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/wiped`
+   * 
+   * Channel for the API to process when a server has just wiped
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdEventsWiped(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : null, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsWipedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
   }
   /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/connected`
@@ -424,6 +942,138 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/connected`
+   * 
+   * Channel for the API to process for when a player connects to a server
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsConnected(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerConnected, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsConnectedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/connected`
+   * 
+   * Channel for the API to process for when a player connects to a server
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsConnected(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerConnected, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsConnectedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/connected`
+   * 
+   * Channel for the API to process for when a player connects to a server
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsConnected(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerConnected, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsConnectedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/connected`
+   * 
+   * Channel for the API to process for when a player connects to a server
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsConnected(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerConnected, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsConnectedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/disconnected`
    * 
    * Channel for the API to process for when a player disconnects from a server
@@ -461,6 +1111,138 @@ export class NatsAsyncApiClient {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
       }
     });
+  }
+  /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/disconnected`
+   * 
+   * Channel for the API to process for when a player disconnects from a server
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsDisconnected(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerDisconnected, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsDisconnectedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/disconnected`
+   * 
+   * Channel for the API to process for when a player disconnects from a server
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsDisconnected(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerDisconnected, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsDisconnectedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/disconnected`
+   * 
+   * Channel for the API to process for when a player disconnects from a server
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsDisconnected(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerDisconnected, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsDisconnectedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/disconnected`
+   * 
+   * Channel for the API to process for when a player disconnects from a server
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsDisconnected(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerDisconnected, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsDisconnectedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
   }
   /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/gatheredResources`
@@ -502,6 +1284,138 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/gatheredResources`
+   * 
+   * Channel for the API to process for when a player gathers some resources
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsGatheredResources(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerResourceGathered, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsGatheredResourcesChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/gatheredResources`
+   * 
+   * Channel for the API to process for when a player gathers some resources
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsGatheredResources(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerResourceGathered, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsGatheredResourcesChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/gatheredResources`
+   * 
+   * Channel for the API to process for when a player gathers some resources
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsGatheredResources(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerResourceGathered, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsGatheredResourcesChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/gatheredResources`
+   * 
+   * Channel for the API to process for when a player gathers some resources
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsGatheredResources(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerResourceGathered, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsGatheredResourcesChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/respawned`
    * 
    * Channel for the API to process for when a player respawn
@@ -541,6 +1455,138 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/respawned`
+   * 
+   * Channel for the API to process for when a player respawn
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsRespawned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerRespawned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsRespawnedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/respawned`
+   * 
+   * Channel for the API to process for when a player respawn
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsRespawned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerRespawned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsRespawnedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/respawned`
+   * 
+   * Channel for the API to process for when a player respawn
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsRespawned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerRespawned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsRespawnedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/respawned`
+   * 
+   * Channel for the API to process for when a player respawn
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsRespawned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerRespawned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsRespawnedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/combat/hit`
    * 
    * Channel for the API to process for when a player hits another player
@@ -578,6 +1624,138 @@ export class NatsAsyncApiClient {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
       }
     });
+  }
+  /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/combat/hit`
+   * 
+   * Channel for the API to process for when a player hits another player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsCombatHit(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerCombatPlayerhit, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsCombatHitChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/combat/hit`
+   * 
+   * Channel for the API to process for when a player hits another player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsCombatHit(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerCombatPlayerhit, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsCombatHitChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/combat/hit`
+   * 
+   * Channel for the API to process for when a player hits another player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsCombatHit(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerCombatPlayerhit, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsCombatHitChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/combat/hit`
+   * 
+   * Channel for the API to process for when a player hits another player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsCombatHit(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerCombatPlayerhit, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsCombatHitChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
   }
   /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/pickup`
@@ -620,6 +1798,142 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/pickup`
+   * 
+   * Channel for the API to process for when a player pickup items ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickup(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemPickup, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickupChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id, item_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/pickup`
+   * 
+   * Channel for the API to process for when a player pickup items ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickup(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemPickup, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickupChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id, item_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/pickup`
+   * 
+   * Channel for the API to process for when a player pickup items ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickup(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemPickup, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickupChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id, item_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/pickup`
+   * 
+   * Channel for the API to process for when a player pickup items ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickup(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemPickup, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickupChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id, item_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/loot`
    * 
    * Channel for the API to process for when a player loots an item ingame
@@ -658,6 +1972,142 @@ export class NatsAsyncApiClient {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
       }
     });
+  }
+  /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/loot`
+   * 
+   * Channel for the API to process for when a player loots an item ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsItemsItemIdLoot(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemLoot, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsItemsItemIdLootChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id, item_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/loot`
+   * 
+   * Channel for the API to process for when a player loots an item ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdLoot(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemLoot, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsItemsItemIdLootChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id, item_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/loot`
+   * 
+   * Channel for the API to process for when a player loots an item ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdLoot(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemLoot, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsItemsItemIdLootChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id, item_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/loot`
+   * 
+   * Channel for the API to process for when a player loots an item ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsItemsItemIdLoot(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemLoot, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsItemsItemIdLootChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id, item_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
   }
   /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/crafted`
@@ -700,6 +2150,142 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/crafted`
+   * 
+   * Channel for the API to process for when a player crafts items ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsItemsItemIdCrafted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemCrafted, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsItemsItemIdCraftedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id, item_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/crafted`
+   * 
+   * Channel for the API to process for when a player crafts items ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdCrafted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemCrafted, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsItemsItemIdCraftedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id, item_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/crafted`
+   * 
+   * Channel for the API to process for when a player crafts items ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdCrafted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemCrafted, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsItemsItemIdCraftedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id, item_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/crafted`
+   * 
+   * Channel for the API to process for when a player crafts items ingame
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsItemsItemIdCrafted(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerItemCrafted, server_id ? : string, steam_id ? : string, item_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string, item_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsItemsItemIdCraftedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id, item_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/events/command`
    * 
    * Channel for the API to process for when a server command is run
@@ -736,6 +2322,134 @@ export class NatsAsyncApiClient {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
       }
     });
+  }
+  /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/command`
+   * 
+   * Channel for the API to process for when a server command is run
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdEventsCommand(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerCommand, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsCommandChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/command`
+   * 
+   * Channel for the API to process for when a server command is run
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdEventsCommand(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerCommand, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdEventsCommandChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/events/command`
+   * 
+   * Channel for the API to process for when a server command is run
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdEventsCommand(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerCommand, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdEventsCommandChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/events/command`
+   * 
+   * Channel for the API to process for when a server command is run
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdEventsCommand(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerCommand, server_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdEventsCommandChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
   }
   /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/reported`
@@ -777,6 +2491,138 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/reported`
+   * 
+   * Channel for the API to process for when a player is reported
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsReported(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerReported, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsReportedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/reported`
+   * 
+   * Channel for the API to process for when a player is reported
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsReported(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerReported, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsReportedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/reported`
+   * 
+   * Channel for the API to process for when a player is reported
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsReported(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerReported, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsReportedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/reported`
+   * 
+   * Channel for the API to process for when a player is reported
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsReported(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerReported, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsReportedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/unbanned`
    * 
    * Channel for notifying a server unbanned a player
@@ -816,6 +2662,138 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/unbanned`
+   * 
+   * Channel for notifying a server unbanned a player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsUnbanned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerUnbanned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsUnbannedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/unbanned`
+   * 
+   * Channel for notifying a server unbanned a player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsUnbanned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerUnbanned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsUnbannedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/unbanned`
+   * 
+   * Channel for notifying a server unbanned a player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsUnbanned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerUnbanned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsUnbannedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/unbanned`
+   * 
+   * Channel for notifying a server unbanned a player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsUnbanned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerUnbanned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsUnbannedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
    * Subscribe to the `v0/rust/servers/{server_id}/players/{steam_id}/events/banned`
    * 
    * Channel for notifying a server banned a player
@@ -853,5 +2831,137 @@ export class NatsAsyncApiClient {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
       }
     });
+  }
+  /**
+   * JetStream pull function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/banned`
+   * 
+   * Channel for notifying a server banned a player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullV0RustServersServerIdPlayersSteamIdEventsBanned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerBanned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsBannedChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/banned`
+   * 
+   * Channel for notifying a server banned a player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToV0RustServersServerIdPlayersSteamIdEventsBanned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerBanned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await v0RustServersServerIdPlayersSteamIdEventsBannedChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `v0/rust/servers/{server_id}/players/{steam_id}/events/banned`
+   * 
+   * Channel for notifying a server banned a player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToV0RustServersServerIdPlayersSteamIdEventsBanned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerBanned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = v0RustServersServerIdPlayersSteamIdEventsBannedChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, server_id, steam_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * JetStream fetch function.
+   * 
+   * Pull message from `v0/rust/servers/{server_id}/players/{steam_id}/events/banned`
+   * 
+   * Channel for notifying a server banned a player
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamFetchV0RustServersServerIdPlayersSteamIdEventsBanned(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : ServerPlayerBanned, server_id ? : string, steam_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, server_id: string, steam_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      v0RustServersServerIdPlayersSteamIdEventsBannedChannel.jetsStreamFetch(
+        onDataCallback,
+        this.js,
+        this.codec, server_id, steam_id,
+        durable,
+        options
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
   }
 }

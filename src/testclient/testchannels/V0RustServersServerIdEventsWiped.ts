@@ -32,3 +32,28 @@ export function publish(
     }
   });
 };
+/**
+ * Internal functionality to publish message to jetstream channel 
+ * v0/rust/servers/{server_id}/events/wiped
+ * 
+ * @param message to publish
+ * @param js to publish with
+ * @param codec used to convert messages
+ * @param server_id parameter to use in topic
+ * @param options to publish with
+ */
+export function jetStreamPublish(
+  message: null,
+  js: Nats.JetStreamClient,
+  codec: Nats.Codec < any > , server_id: string,
+  options ? : Nats.PublishOptions
+): Promise < void > {
+  return new Promise < void > (async (resolve, reject) => {
+    try {
+      await js.publish(`v0.rust.servers.${server_id}.events.wiped`, Nats.Empty);
+      resolve();
+    } catch (e: any) {
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+    }
+  });
+};

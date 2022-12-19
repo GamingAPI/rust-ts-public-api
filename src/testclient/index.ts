@@ -134,6 +134,7 @@ export {
  */
 export class NatsAsyncApiTestClient {
   private nc ? : Nats.NatsConnection;
+  private js ? : Nats.JetStreamClient;
   private codec ? : Nats.Codec < any > ;
   private options ? : Nats.ConnectionOptions;
   /**
@@ -153,6 +154,7 @@ export class NatsAsyncApiTestClient {
       }
       try {
         this.nc = await Nats.connect(this.options);
+        this.js = this.nc.jetstream();
         resolve();
       } catch (e: any) {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -247,6 +249,29 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/events/started` jetstream channel 
+   * 
+   * Channel for the API to process for when a server has started
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdEventsStarted(
+    message: ServerStarted, server_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdEventsStartedChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/events/stopped` channel 
    * 
    * Channel for the API to process for when a server has stopped
@@ -262,6 +287,29 @@ export class NatsAsyncApiTestClient {
       return v0RustServersServerIdEventsStoppedChannel.publish(
         message,
         this.nc,
+        this.codec, server_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/events/stopped` jetstream channel 
+   * 
+   * Channel for the API to process for when a server has stopped
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdEventsStopped(
+    message: ServerStopped, server_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdEventsStoppedChannel.jetStreamPublish(
+        message,
+        this.js,
         this.codec, server_id,
         options
       );
@@ -294,6 +342,30 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/events/player/{steam_id}/chatted` jetstream channel 
+   * 
+   * Event for when a player used the chat
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdEventsPlayerSteamIdChatted(
+    message: ChatMessage, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdEventsPlayerSteamIdChattedChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/events/wiped` channel 
    * 
    * Channel for the API to process when a server has just wiped
@@ -309,6 +381,29 @@ export class NatsAsyncApiTestClient {
       return v0RustServersServerIdEventsWipedChannel.publish(
         message,
         this.nc,
+        this.codec, server_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/events/wiped` jetstream channel 
+   * 
+   * Channel for the API to process when a server has just wiped
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdEventsWiped(
+    message: null, server_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdEventsWipedChannel.jetStreamPublish(
+        message,
+        this.js,
         this.codec, server_id,
         options
       );
@@ -341,6 +436,30 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/connected` jetstream channel 
+   * 
+   * Channel for the API to process for when a player connects to a server
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsConnected(
+    message: ServerPlayerConnected, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsConnectedChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/disconnected` channel 
    * 
    * Channel for the API to process for when a player disconnects from a server
@@ -357,6 +476,30 @@ export class NatsAsyncApiTestClient {
       return v0RustServersServerIdPlayersSteamIdEventsDisconnectedChannel.publish(
         message,
         this.nc,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/disconnected` jetstream channel 
+   * 
+   * Channel for the API to process for when a player disconnects from a server
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsDisconnected(
+    message: ServerPlayerDisconnected, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsDisconnectedChannel.jetStreamPublish(
+        message,
+        this.js,
         this.codec, server_id, steam_id,
         options
       );
@@ -389,6 +532,30 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/gatheredResources` jetstream channel 
+   * 
+   * Channel for the API to process for when a player gathers some resources
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsGatheredResources(
+    message: ServerPlayerResourceGathered, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsGatheredResourcesChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/respawned` channel 
    * 
    * Channel for the API to process for when a player respawn
@@ -413,6 +580,30 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/respawned` jetstream channel 
+   * 
+   * Channel for the API to process for when a player respawn
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsRespawned(
+    message: ServerPlayerRespawned, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsRespawnedChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/combat/hit` channel 
    * 
    * Channel for the API to process for when a player hits another player
@@ -429,6 +620,30 @@ export class NatsAsyncApiTestClient {
       return v0RustServersServerIdPlayersSteamIdEventsCombatHitChannel.publish(
         message,
         this.nc,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/combat/hit` jetstream channel 
+   * 
+   * Channel for the API to process for when a player hits another player
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsCombatHit(
+    message: ServerPlayerCombatPlayerhit, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsCombatHitChannel.jetStreamPublish(
+        message,
+        this.js,
         this.codec, server_id, steam_id,
         options
       );
@@ -462,6 +677,31 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/pickup` jetstream channel 
+   * 
+   * Channel for the API to process for when a player pickup items ingame
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickup(
+    message: ServerPlayerItemPickup, server_id: string, steam_id: string, item_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsItemsItemIdPickupChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id, steam_id, item_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/loot` channel 
    * 
    * Channel for the API to process for when a player loots an item ingame
@@ -479,6 +719,31 @@ export class NatsAsyncApiTestClient {
       return v0RustServersServerIdPlayersSteamIdEventsItemsItemIdLootChannel.publish(
         message,
         this.nc,
+        this.codec, server_id, steam_id, item_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/loot` jetstream channel 
+   * 
+   * Channel for the API to process for when a player loots an item ingame
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdLoot(
+    message: ServerPlayerItemLoot, server_id: string, steam_id: string, item_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsItemsItemIdLootChannel.jetStreamPublish(
+        message,
+        this.js,
         this.codec, server_id, steam_id, item_id,
         options
       );
@@ -512,6 +777,31 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/crafted` jetstream channel 
+   * 
+   * Channel for the API to process for when a player crafts items ingame
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   * @param item_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdCrafted(
+    message: ServerPlayerItemCrafted, server_id: string, steam_id: string, item_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsItemsItemIdCraftedChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id, steam_id, item_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/events/command` channel 
    * 
    * Channel for the API to process for when a server command is run
@@ -527,6 +817,29 @@ export class NatsAsyncApiTestClient {
       return v0RustServersServerIdEventsCommandChannel.publish(
         message,
         this.nc,
+        this.codec, server_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/events/command` jetstream channel 
+   * 
+   * Channel for the API to process for when a server command is run
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdEventsCommand(
+    message: ServerCommand, server_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdEventsCommandChannel.jetStreamPublish(
+        message,
+        this.js,
         this.codec, server_id,
         options
       );
@@ -559,6 +872,30 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/reported` jetstream channel 
+   * 
+   * Channel for the API to process for when a player is reported
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsReported(
+    message: ServerPlayerReported, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsReportedChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/unbanned` channel 
    * 
    * Channel for notifying a server unbanned a player
@@ -583,6 +920,30 @@ export class NatsAsyncApiTestClient {
     }
   }
   /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/unbanned` jetstream channel 
+   * 
+   * Channel for notifying a server unbanned a player
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsUnbanned(
+    message: ServerPlayerUnbanned, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsUnbannedChannel.jetStreamPublish(
+        message,
+        this.js,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
    * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/banned` channel 
    * 
    * Channel for notifying a server banned a player
@@ -599,6 +960,30 @@ export class NatsAsyncApiTestClient {
       return v0RustServersServerIdPlayersSteamIdEventsBannedChannel.publish(
         message,
         this.nc,
+        this.codec, server_id, steam_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `v0/rust/servers/{server_id}/players/{steam_id}/events/banned` jetstream channel 
+   * 
+   * Channel for notifying a server banned a player
+   * 
+   * @param message to publish
+   * @param server_id parameter to use in topic
+   * @param steam_id parameter to use in topic
+   */
+  public jetStreamPublishToV0RustServersServerIdPlayersSteamIdEventsBanned(
+    message: ServerPlayerBanned, server_id: string, steam_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return v0RustServersServerIdPlayersSteamIdEventsBannedChannel.jetStreamPublish(
+        message,
+        this.js,
         this.codec, server_id, steam_id,
         options
       );
