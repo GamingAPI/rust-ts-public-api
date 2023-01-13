@@ -26,7 +26,9 @@ describe('v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/
   it('can send message', async () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
     var receivedMsg: Client.ServerPlayerItemLoot | undefined = undefined;
-    var receivedServerId: string | undefined = undefinedvar receivedSteamId: string | undefined = undefinedvar receivedItemId: string | undefined = undefined
+    var receivedServerId: string | undefined = undefined;
+    var receivedSteamId: string | undefined = undefined;
+    var receivedItemId: string | undefined = undefined;
     var publishMessage: TestClient.ServerPlayerItemLoot = TestClient.ServerPlayerItemLoot.unmarshal({
       "loot_timestamp": "2016-08-29T09:12:33.001Z",
       "steam_id": "string",
@@ -41,13 +43,15 @@ describe('v0/rust/servers/{server_id}/players/{steam_id}/events/items/{item_id}/
       },
       "amount": 0
     });
-    var ServerIdToSend: string = "string"
-    var SteamIdToSend: string = "string"
-    var ItemIdToSend: string = "string"
+    var ServerIdToSend: string = "string";
+    var SteamIdToSend: string = "string";
+    var ItemIdToSend: string = "string";
     const subscription = await client.subscribeToV0RustServersServerIdPlayersSteamIdEventsItemsItemIdLoot((err, msg, server_id, steam_id, item_id) => {
         receivedError = err;
         receivedMsg = msg;
-        receivedServerId = server_idreceivedSteamId = steam_idreceivedItemId = item_id
+        receivedServerId = server_id;
+        receivedSteamId = steam_id;
+        receivedItemId = item_id;
       }, ServerIdToSend, SteamIdToSend, ItemIdToSend,
       true
     );
