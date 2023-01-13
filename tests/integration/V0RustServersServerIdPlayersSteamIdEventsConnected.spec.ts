@@ -26,7 +26,8 @@ describe('v0/rust/servers/{server_id}/players/{steam_id}/events/connected can ta
   it('can send message', async () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
     var receivedMsg: Client.ServerPlayerConnected | undefined = undefined;
-    var receivedServerId: string | undefined = undefinedvar receivedSteamId: string | undefined = undefined
+    var receivedServerId: string | undefined = undefined;
+    var receivedSteamId: string | undefined = undefined;
     var publishMessage: TestClient.ServerPlayerConnected = TestClient.ServerPlayerConnected.unmarshal({
       "connected_timestamp": "2016-08-29T09:12:33.001Z",
       "player": {
@@ -35,12 +36,13 @@ describe('v0/rust/servers/{server_id}/players/{steam_id}/events/connected can ta
         "address": "string"
       }
     });
-    var ServerIdToSend: string = "string"
-    var SteamIdToSend: string = "string"
+    var ServerIdToSend: string = "string";
+    var SteamIdToSend: string = "string";
     const subscription = await client.subscribeToV0RustServersServerIdPlayersSteamIdEventsConnected((err, msg, server_id, steam_id) => {
         receivedError = err;
         receivedMsg = msg;
-        receivedServerId = server_idreceivedSteamId = steam_id
+        receivedServerId = server_id;
+        receivedSteamId = steam_id;
       }, ServerIdToSend, SteamIdToSend,
       true
     );

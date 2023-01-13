@@ -26,18 +26,18 @@ describe('v0/rust/servers/{server_id}/events/command can talk to itself', () => 
   it('can send message', async () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
     var receivedMsg: Client.ServerCommand | undefined = undefined;
-    var receivedServerId: string | undefined = undefined
+    var receivedServerId: string | undefined = undefined;
     var publishMessage: TestClient.ServerCommand = TestClient.ServerCommand.unmarshal({
       "command": "string",
       "arguments": "string",
       "steam_id": "string",
       "timestamp": "2016-08-29T09:12:33.001Z"
     });
-    var ServerIdToSend: string = "string"
+    var ServerIdToSend: string = "string";
     const subscription = await client.subscribeToV0RustServersServerIdEventsCommand((err, msg, server_id) => {
         receivedError = err;
         receivedMsg = msg;
-        receivedServerId = server_id
+        receivedServerId = server_id;
       }, ServerIdToSend,
       true
     );
